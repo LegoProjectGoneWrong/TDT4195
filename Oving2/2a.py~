@@ -1,0 +1,86 @@
+from PIL import Image as Im
+import numpy as np
+import math
+
+
+
+def image_2_matrix(img):
+  m = [[img.getpixel((x,y)) for x in range(img.size[0])] for y in range(img.size[1])]
+  return m
+
+def matrix_2_image(m,mode="RGB"):
+  lx, ly = len(m),len(m[0])
+  img = Im.new(mode,(lx,ly))
+  for x in range(lx):
+    for y in range(ly):
+      img.putpixel((x,y), m[y][x])
+  return img
+
+def matrix_2_gray(m):
+  xl,yl = len(m),len(m[0])
+  return [[int(np.mean(m[x][y])) for x in range(xl)] for y in range(yl)]
+
+def matrix_2_downsample(m,scale=2):
+  xl,yl = int(len(m)/scale),int(len(m[0])/scale)
+  d = []
+  for x in range (xl):
+    d.append([])
+    for y in range (yl):
+      d[x].append(m[scale*x][scale*y])
+  return d 
+
+def create_Gaussian_kernel(nxn,q=1):
+  k = []
+  e = math.e
+  c = int(nxn/2)
+  q2 = math.pow(q,2)
+  s = 0
+  for u in range(nxn):
+    k.append([])
+    for v in range(nxn):
+      exp = (math.pow(u-c,2) + math.pow(v-c,2))/(2*q2)
+      value = 1/((2*math.pi)*q2*math.pow(e,exp))
+      k[u].append(value)
+      s += value
+  print(s)
+  K = [[(k[x][y]/s) for y in range(len(k))] for x in range(len(k))]
+  return K
+
+def apply_filter(m,k):
+  n = int(len(k)/2)
+  M = []
+  for x in range(n,len(m)-n):
+    M.append([])
+    for y in range(n,len(m[x])-n):
+      s = ()
+      for c in range(3):
+        color = 0
+        for i in range(len(k)):
+          for j in range(len(k[i])):
+            color += m[x-n+i][y-n+j][c]*k[-n+i][-n+j]
+        s+=(int(color),)
+      M[x-n].append(s)
+  return M
+
+
+
+if __name__ == "__main__":
+  
+  img = Im.open("bricks.tiff")
+  img.save("Bricks_original.bmp","bmp")
+  m = image_2_matrix(img)
+  m_split = matrix_2_downsample(m)
+  print(m_split[10][10])
+  img_split = matrix_2_image(m_split)
+  img.save("Bricks_split.bmp","bmp")
+  
+  #Oppgave 2b
+  m = image_2_matrix(img)
+  for n in range(3,8,2):
+    kernel = create_Gaussian_kernel(n)
+    matrix = apply_filter(m,kernel)
+    downsampled = matrix_2_downsample(matrix)
+    Img = matrix_2_image(downsampled)
+    name = "Bricks_" + str(n) + ".bmp"
+    Img.save(name,"bmp")
+ 

@@ -1,0 +1,20 @@
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+img=mpimg.imread('lake.jpg')
+
+plt.imshow(img)
+plt.show()
+#loopes through all the pixels of the picture
+for x in range (0,len(img)):
+  for y in range(0,len(img[x])):
+    #finds the mean of the 3 colors, and replaces the pixel
+    data = img[x][y]
+    sum = 0
+    for c in range(0,3):
+      sum += img[x][y][c]
+    color = sum/3;
+    img[x][y]=[color,color,color]
+
+plt.imshow(img)      
+plt.show()

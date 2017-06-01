@@ -1,0 +1,19 @@
+Theory:
+1. The histogram showing frequency of the intensity values of an image will
+tell you if its low contrast if the frequent values are closely grouped, while
+it also usually has lacks intensities in the higher and/or lower spectre of
+the histogram. An example is the following picture:
+
+2. Histogram equalization enhances the contrast to the image. Equalizing an
+image a second time wont change the image further, as the intensities are
+already amplified to whatever values they are supposed to be.
+
+2. Histogram equalization enhances the contrast to the image. Equalizing an
+image a second time wont change the image further, as the intensities are
+already amplified to whatever values they are supposed to be.
+
+4. Correlation is the process of moving a filter mask over the image, as in
+all spatail filtering, and computing the sum of products at each location. Convolution
+has a simmilar mechanig, except that the filter is rotated 180 degrees. All
+symmetrical kernels will have the samme effect for both convolution and
+correlation. An example is [1,1,1] or [1,2,4,2,1]
